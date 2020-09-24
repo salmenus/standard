@@ -23,12 +23,21 @@ export const onCurrencyPairChanged = (state: Readonly<StoreState>, currencyPair:
 
 export const book = (state: Readonly<StoreState>): StoreState => {
     log(`booking`);
-    throw new Error(`not implemented`);
+    return {
+        ...state,
+        isBooking: true
+    };
 };
 
 export const bookingComplete = (state: Readonly<StoreState>, bookingSuccess: boolean): StoreState => {
     log(`booking completed`);
-    throw new Error(`not implemented`);
+
+    const bookingMessage = bookingSuccess ? 'Booking complete with success' : 'Booking failed! An error occurred. Please try again.';
+    return {
+        ...state,
+        isBooking: false,
+        bookingResults: bookingMessage
+    };
 };
 
 // Combining all reducers in one object and mapping them to relevant actions

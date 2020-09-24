@@ -1,10 +1,15 @@
 import { log } from '../infrastructure/logger'
+import { StoreState } from '../infrastructure/types';
 import { OrdersService } from "../services/ordersService";
+import { Action, BOOKING_COMPLETE } from './actions';
 
 const ordersService = new OrdersService();
 
 export const SideEffects = {
-    book(state: any, onDone: (doneAction: string, ...args: any) => void) {
-        log(`booking`);
+    book(state: Readonly<StoreState>, onDone: (doneAction: Action, ...args: any) => void) {
+        log(`booking execution`);
+        ordersService.book(state.currencyPair, state.amount, (success) => {
+            onDone(BOOKING_COMPLETE, success);
+        });
     },
 };

@@ -18,7 +18,10 @@ export default class OrdersView extends React.Component<OrdersViewProps, OrdersV
     constructor(props: Readonly<OrdersViewProps>) {
         super(props);
 
-        // Component state shoulld be different store's values - hence the spread operator
+        // Component state shoulld be different store's values - the store's state can contain
+        // more values that the component won't need (hence the use the spread operator).
+        // In a more complex case, we can cherry-pick the attributes from the global store
+        // to use within a component's state.
         this.state = {... props.store.currentState};
     }
 
