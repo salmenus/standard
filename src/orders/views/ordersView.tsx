@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Store } from '../infrastructure/store';
 import { StoreState } from '../infrastructure/types';
+import { AMOUNT_CHANGED, BOOK, CURRENCY_PAIR_CHANGED } from '../store/actions';
 
 type OrdersViewState = {
     amount?: string;
@@ -21,20 +22,20 @@ export default class OrdersView extends React.Component<OrdersViewProps, OrdersV
         this.state = {... props.store.currentState};
     }
 
-    onStoreStateChangeCallback = (storeState: StoreState) => {
+    onStoreStateChange = (storeState: Readonly<StoreState>) => {
         this.setState({... storeState});
     }
 
     componentDidMount() {
         const { store } = this.props;
-        store.registerOnStateChangedCallback(this.onStoreStateChangeCallback);
+        store.subscribe(this.onStoreStateChange);
     };
 
     componentWillUnmount() {
         // Removing listener to avoid memory leaks
         // We should pass the same reference to the function used when registering the callback
         const { store } = this.props;
-        store.removeOnStateChangedCallback(this.onStoreStateChangeCallback);
+        store.unsubscribe(this.onStoreStateChange);
     }
 
     // Minor memory/performance optimisation:
@@ -46,18 +47,18 @@ export default class OrdersView extends React.Component<OrdersViewProps, OrdersV
     onAmountChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
         const amount = event?.target?.value;
         const { store } = this.props;
-        store.dispatchAction('onAmountChanged', amount);
+        store.dispatchAction(AMOUNT_CHANGED, amount);
     };
 
     onCurrencyPairChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const ccyPair = event?.target?.value;
         const { store } = this.props;
-        store.dispatchAction('onCurrencyPairChanged', ccyPair);
+        store.dispatchAction(CURRENCY_PAIR_CHANGED, ccyPair);
     };
 
     onBookRequested = () => {
         const { store } = this.props;
-        store.dispatchAction('book');
+        store.dispatchAction(BOOK);
     };
 
     render() {
