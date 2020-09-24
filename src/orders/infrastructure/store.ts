@@ -1,5 +1,4 @@
-export type Reducer<TState> = (currentState: TState, ...args: any) => TState;
-export type SideEffect<TState> = (currentState: TState, ...args: any) => void;
+import { Reducer, SideEffect } from './types';
 
 export class Store<TState> {
     constructor(
@@ -14,19 +13,22 @@ export class Store<TState> {
         return this.state;
     }
 
-    dispatchAction(name: string, ...rest: any) {
+    // Moving function definition out of caller 'dispatchAction'
+    // to avoid re-defining it each time 'dispatchAction' is called
+    private onSideEffectDone = (doneAction: string, ...args: any) => {
+        this.dispatchAction(doneAction, ...args);
+    };
+
+    dispatchAction = (name: string, ...rest: any) => {
         const reducer = this.reducers[name];
         if (reducer) {
             const nextState = reducer(this.state, ...rest);
             const sideEffect = this.sideEffects[name];
             if (sideEffect) {
-                const onSideEffectDone = (doneAction: string, ...args: any) => {
-                    this.dispatchAction(doneAction, ...args);
-                };
-                sideEffect(nextState, onSideEffectDone);
+                sideEffect(nextState, this.onSideEffectDone);
             }
             this.state = nextState;
             this.onStateChanged(this.state);
         }
-    }
+    };
 }
