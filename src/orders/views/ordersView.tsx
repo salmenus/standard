@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { Store } from '../infrastructure/store';
 import { StoreState } from '../infrastructure/types';
-import { Reducers } from '../store/reducers';
-import { SideEffects } from '../store/sideEffects';
 
 type OrdersViewState = {
     amount?: string;
@@ -12,50 +10,54 @@ type OrdersViewState = {
 };
 
 type OrdersViewProps = {
-    [name: string]: any;
+    store: Store<StoreState>;
 }
 
-export default class OrdersView extends React.Component<OrdersViewState, OrdersViewProps> {
-    private store: Store<StoreState>;
-
+export default class OrdersView extends React.Component<OrdersViewProps, OrdersViewState> {
     constructor(props: Readonly<OrdersViewProps>) {
         super(props);
 
-        const initialState: StoreState = {
-            amount: '1m',
-            currencyPair: 'USDGBP',
-            isBooking: false,
-            bookingResults: null,
-        };
-
-        this.store = new Store<StoreState>(
-            initialState,
-            Reducers,
-            SideEffects,
-            (nextState: StoreState) => this.setState(nextState)
-        );
-
-        // set initial state
-        this.state = this.store.currentState;
+        // Component state shoulld be different store's values - hence the spread operator
+        this.state = {... props.store.currentState};
     }
 
-    // Passing a lambda function to 'onChange' and 'onClick' attributes means that
-    // we define a new function (the lambda function) each time a render() function is called.
-    // By passing a reference to an event handler defined at class level (the next 3 functions)
-    // we guarantee that event handles are only define once.
+    onStoreStateChangeCallback = (storeState: StoreState) => {
+        this.setState({... storeState});
+    }
+
+    componentDidMount() {
+        const { store } = this.props;
+        store.registerOnStateChangedCallback(this.onStoreStateChangeCallback);
+    };
+
+    componentWillUnmount() {
+        // Removing listener to avoid memory leaks
+        // We should pass the same reference to the function used when registering the callback
+        const { store } = this.props;
+        store.removeOnStateChangedCallback(this.onStoreStateChangeCallback);
+    }
+
+    // Minor memory/performance optimisation:
+    // Passing a lambda function to 'onChange' and 'onClick' attributes (as it was previously done) implies
+    // that we define a new function (the lambda function) each time a render() function is called.
+    // By passing a reference to an event handler defined at class level (like the next 3 functions)
+    // we guarantee that event handlers are only define once.
 
     onAmountChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
         const amount = event?.target?.value;
-        this.store.dispatchAction('onAmountChanged', amount);
+        const { store } = this.props;
+        store.dispatchAction('onAmountChanged', amount);
     };
 
     onCurrencyPairChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const ccyPair = event?.target?.value;
-        this.store.dispatchAction('onCurrencyPairChanged', ccyPair);
+        const { store } = this.props;
+        store.dispatchAction('onCurrencyPairChanged', ccyPair);
     };
 
     onBookRequested = () => {
-        this.store.dispatchAction('book');
+        const { store } = this.props;
+        store.dispatchAction('book');
     };
 
     render() {

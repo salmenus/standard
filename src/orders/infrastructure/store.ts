@@ -1,13 +1,23 @@
-import { Reducer, SideEffect } from './types';
+import { Reducer, SideEffect, StateChangeCallback } from './types';
 
 export class Store<TState> {
+    // Using Set container for callback functions to ensure that each callback is only registered once.
+    stateChangedCallbacks: Set<StateChangeCallback<TState>> = new Set();
+
     constructor(
         private state: TState,
         private readonly reducers: { [name: string]: Reducer<TState> },
         private readonly sideEffects: { [name: string]: SideEffect<TState> },
-        private readonly onStateChanged: (state: TState) => void
     ) {
     }
+
+    registerOnStateChangedCallback = (callback: StateChangeCallback<TState>) => {
+        this.stateChangedCallbacks.add(callback);
+    };
+
+    removeOnStateChangedCallback = (callback: StateChangeCallback<TState>) => {
+        this.stateChangedCallbacks.delete(callback);
+    };
 
     get currentState(): TState {
         return this.state;
@@ -28,7 +38,9 @@ export class Store<TState> {
                 sideEffect(nextState, this.onSideEffectDone);
             }
             this.state = nextState;
-            this.onStateChanged(this.state);
+            this.stateChangedCallbacks.forEach(stateChangedCallback => {
+                stateChangedCallback(this.state);
+            });
         }
     };
 }

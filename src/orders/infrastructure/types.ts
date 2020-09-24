@@ -11,3 +11,5 @@ export type StoreState = {
     isBooking: boolean;
     bookingResults: string | null
 };
+
+export type StateChangeCallback<TState> = (state: TState) => void;
