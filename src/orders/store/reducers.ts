@@ -1,5 +1,6 @@
 import { log } from '../infrastructure/logger';
 import { ReducersMap, StoreState } from '../infrastructure/types';
+import { AMOUNT_CHANGED, BOOK, BOOKING_COMPLETE, CURRENCY_PAIR_CHANGED } from './actions';
 
 // To make testing easier, and to ensure purity of functions, I declared them sepeeately and
 // exported them. I use 'Reducers' object at the bottom to combine all reducers.
@@ -30,10 +31,10 @@ export const bookingComplete = (state: Readonly<StoreState>, bookingSuccess: boo
     throw new Error(`not implemented`);
 };
 
-// Combining all reducers in one object
+// Combining all reducers in one object and mapping them to relevant actions
 export const Reducers: ReducersMap<StoreState> = {
-    onAmountChanged,
-    onCurrencyPairChanged,
-    book,
-    bookingComplete
+    [AMOUNT_CHANGED]: onAmountChanged,
+    [CURRENCY_PAIR_CHANGED]: onCurrencyPairChanged,
+    [BOOK]: book,
+    [BOOKING_COMPLETE]: bookingComplete
 };
