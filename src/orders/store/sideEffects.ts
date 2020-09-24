@@ -7,7 +7,7 @@ const ordersService = new OrdersService();
 
 export const SideEffects = {
     book(state: Readonly<StoreState>, onDone: (doneAction: Action, ...args: any) => void) {
-        log(`booking execution`);
+        log(`booking execution: ${state.currencyPair} | ${state.amount}`);
         ordersService.book(state.currencyPair, state.amount, (success) => {
             onDone(BOOKING_COMPLETE, success);
         });

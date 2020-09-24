@@ -25,6 +25,7 @@ export const book = (state: Readonly<StoreState>): StoreState => {
     log(`booking`);
     return {
         ...state,
+        bookingResults: null,
         isBooking: true
     };
 };
@@ -32,7 +33,7 @@ export const book = (state: Readonly<StoreState>): StoreState => {
 export const bookingComplete = (state: Readonly<StoreState>, bookingSuccess: boolean): StoreState => {
     log(`booking completed`);
 
-    const bookingMessage = bookingSuccess ? 'Booking complete with success' : 'Booking failed! An error occurred. Please try again.';
+    const bookingMessage = bookingSuccess ? 'Booking complete with success.' : 'Booking failed. Please try again.';
     return {
         ...state,
         isBooking: false,

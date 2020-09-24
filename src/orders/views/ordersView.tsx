@@ -41,7 +41,7 @@ export default class OrdersView extends React.Component<OrdersViewProps, OrdersV
         store.unsubscribe(this.onStoreStateChange);
     }
 
-    // Minor memory/performance optimisation:
+    // Minor performance optimisation:
     // Passing a lambda function to 'onChange' and 'onClick' attributes (as it was previously done) implies
     // that we define a new function (the lambda function) each time a render() function is called.
     // By passing a reference to an event handler defined at class level (like the next 3 functions)
@@ -64,8 +64,19 @@ export default class OrdersView extends React.Component<OrdersViewProps, OrdersV
         store.dispatchAction(BOOK);
     };
 
+    getBookingStatusMessage = () => {
+        const { isBooking, bookingResults } = this.state;
+        if (isBooking) {
+            return 'Booking in progress.';
+        }
+
+        return bookingResults;
+    }
+
     render() {
-        const shouldDisableForm = this.state.isBooking === true;
+        const { isBooking } = this.state;
+        const shouldDisableForm = isBooking === true;
+        const statusMessage = this.getBookingStatusMessage();;
         return (
             <div>
                 <h1>OrdersList</h1>
@@ -87,6 +98,9 @@ export default class OrdersView extends React.Component<OrdersViewProps, OrdersV
                         book
                     </button>
                 </div>
+                {statusMessage && (
+                    <p>{statusMessage}</p>
+                )}
             </div>
         );
     }
