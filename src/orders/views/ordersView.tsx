@@ -98,9 +98,7 @@ export default class OrdersView extends React.Component<OrdersViewProps, OrdersV
                         book
                     </button>
                 </div>
-                {statusMessage && (
-                    <p>{statusMessage}</p>
-                )}
+                {statusMessage && <h3>{statusMessage}</h3>}
             </div>
         );
     }

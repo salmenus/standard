@@ -1,10 +1,10 @@
 export class OrdersService {
-    book(currencyPair: string, amount: string, onResultsReceivedCallback: (success: boolean) => void) {
-        setTimeout(() => {
+    book(_currencyPair: string, amount: string) {
+        return new Promise((resolve) => {
+            setTimeout(() => {
                 const bookingSuccess = amount === "1m";
-                onResultsReceivedCallback(bookingSuccess);
-            },
-            2000
-        )
+                resolve(bookingSuccess);
+            }, 2000);
+        });
     }
 }
