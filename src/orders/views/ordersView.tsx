@@ -65,14 +65,15 @@ export default class OrdersView extends React.Component<OrdersViewProps, OrdersV
     };
 
     render() {
+        const shouldDisableForm = this.state.isBooking === true;
         return (
             <div>
                 <h1>OrdersList</h1>
                 Amount:
-                    <input type="text" value={this.state.amount} onChange={this.onAmountChanged} />
+                    <input type="text" value={this.state.amount} onChange={this.onAmountChanged} disabled={shouldDisableForm} />
                 <br/>
                 Currency:
-                <select value={this.state.currencyPair} onChange={this.onCurrencyPairChanged} >
+                <select value={this.state.currencyPair} onChange={this.onCurrencyPairChanged} disabled={shouldDisableForm} >
                     <option value="EURUSD">EURUSD</option>
                     <option value="USDJPY">USDJPY</option>
                     <option value="USDGBP">USDGBP</option>
@@ -82,7 +83,7 @@ export default class OrdersView extends React.Component<OrdersViewProps, OrdersV
                 <div>
                     Amount({this.state.amount})
                     <br/>
-                    <button onClick={this.onBookRequested}>
+                    <button onClick={this.onBookRequested} disabled={shouldDisableForm}>
                         book
                     </button>
                 </div>
