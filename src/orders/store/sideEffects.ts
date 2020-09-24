@@ -5,6 +5,9 @@ import { Action, BOOKING_COMPLETE, BOOK } from './actions';
 
 const ordersService = new OrdersService();
 
+// In a similar way to reducers - To make testing easier, I declared sideEffect functions separately
+// and exported them. I use 'SideEffects' object at the bottom to combine all the side effect functions.
+
 export const book = (state: Readonly<StoreState>, onDone: (doneAction: Action, ...args: any) => void) => {
     log(`booking execution: ${state.currencyPair} | ${state.amount}`);
 

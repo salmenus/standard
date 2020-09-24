@@ -41,6 +41,8 @@ export class Store<TState> {
         if (reducer) {
             const nextState = reducer(this.state, ...rest);
 
+            // One possible extension of this is to implement a middleware-like concept
+            // where side-effects could be chained and executed one after the other.
             const sideEffect = this.sideEffects[name];
             if (sideEffect) {
                 sideEffect(nextState, this.onSideEffectDone);
