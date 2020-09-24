@@ -40,10 +40,12 @@ export class Store<TState> {
         const reducer = this.reducers[name];
         if (reducer) {
             const nextState = reducer(this.state, ...rest);
+
             const sideEffect = this.sideEffects[name];
             if (sideEffect) {
                 sideEffect(nextState, this.onSideEffectDone);
             }
+
             this.state = nextState;
             this.stateChangedCallbacks.forEach(stateChangedCallback => {
                 stateChangedCallback(this.state);
