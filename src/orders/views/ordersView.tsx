@@ -45,7 +45,7 @@ export default class OrdersView extends React.Component<OrdersViewProps, OrdersV
     // Passing a lambda function to 'onChange' and 'onClick' attributes (as it was previously done) implies
     // that we define a new function (the lambda function) each time a render() function is called.
     // By passing a reference to an event handler defined at class level (like the next 3 functions)
-    // we guarantee that event handlers are only define once.
+    // we guarantee that event handlers are only defined once.
 
     onAmountChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
         const amount = event?.target?.value;
